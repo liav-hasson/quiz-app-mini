@@ -4,8 +4,6 @@
 # Runs frontend, backend, and MongoDB containers for local development
 # MongoDB is bootstrapped with seed data from db.json
 
-version: '3.8'
-
 services:
   # ===========================================================================
   # MongoDB Service - Database
@@ -57,7 +55,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
       interval: 30s
       timeout: 10s
       retries: 3

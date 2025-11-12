@@ -158,7 +158,7 @@ fi
 log "========================================="
 log "Quiz App Mini setup complete!"
 log "Frontend: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):3000"
-log "Backend:  http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):5000/health"
+log "Backend:  http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):5000/api/health"
 log "========================================="
 log "Check logs: docker compose logs -f"
 log "Check status: docker ps"

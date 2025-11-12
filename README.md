@@ -39,12 +39,13 @@ This Terraform configuration creates:
 
 ### Configure Values
   
-#### Edit `docker-compose.yml`:
-   ```yaml
-   environment:
-     - OPENAI_API_KEY=sk-your-key-here
-     - OPENAI_MODEL=gpt-4o-mini # choose your model - gpt-4o-mini model is cheapest.
-   ``` 
+#### Set OpenAI API Key
+   ```bash
+   # Export the API key before running docker-compose
+   export OPENAI_API_KEY=sk-your-key-here
+   ```
+   
+* **Note:** If deploying via Terraform, the EC2 instance will need the key set either in its environment, passed via user-data or hard-coded to docker-compose.yml.
 
 #### Edit `terraform.tfvars` to change defaults
 
@@ -102,7 +103,7 @@ terraform destroy
 ========================================
 
 Frontend: http://<PUBLIC_IP>:3000
-Backend:  http://<PUBLIC_IP>:5000/health
+Backend:  http://<PUBLIC_IP>:5000/api/health
 SSH:      ssh -i ~/.ssh/<KEY_NAME>.pem ubuntu@<PUBLIC_IP>
 
 ========================================
