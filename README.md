@@ -46,7 +46,7 @@ This Terraform configuration creates:
      - OPENAI_MODEL=gpt-4o-mini # choose your model - gpt-4o-mini model is cheapest.
    ``` 
 
-#### Optional: Edit `terraform.tfvars` to change defaults
+#### Edit `terraform.tfvars` to change defaults
 
 ```hcl
 # AWS Region
@@ -57,9 +57,12 @@ vpc_cidr             = "10.1.0.0/16"
 public_subnet_cidr   = "10.1.1.0/24"
 availability_zone    = "eu-north-1a"
 
-# EC2 configuration
+# EC2 configurations
 instance_type = "t3.small" 
 root_volume_size = 12 
+
+# SSH key configuration
+ssh_key_name = "your-key-name"
 ```
 ---
 
