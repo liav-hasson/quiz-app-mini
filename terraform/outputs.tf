@@ -23,6 +23,11 @@ output "backend_health" {
   value       = "http://${aws_instance.quiz_mini.public_ip}:5000/health"
 }
 
+output "ssh_command" {
+  description = "SSH command to connect to instance"
+  value       = "ssh -i ~/.ssh/${var.ssh_key_name}.pem ubuntu@${aws_instance.quiz_mini.public_ip}"
+}
+
 output "deployment_status" {
   description = "Information about deployment"
   value       = <<-EOT
@@ -33,6 +38,7 @@ output "deployment_status" {
   
   Frontend: http://${aws_instance.quiz_mini.public_ip}:3000
   Backend:  http://${aws_instance.quiz_mini.public_ip}:5000/health
+  SSH:      ssh -i ~/.ssh/${var.ssh_key_name}.pem ubuntu@${aws_instance.quiz_mini.public_ip}
   
   Note: It may take 2-3 minutes for Docker containers to start.
   View setup logs: Check EC2 user data logs in AWS Console

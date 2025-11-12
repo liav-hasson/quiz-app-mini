@@ -39,7 +39,7 @@ This Terraform configuration creates:
 
 ### Configure Values
   
-Edit `docker-compose.yml`:
+#### Edit `docker-compose.yml`:
    ```yaml
    environment:
      - OPENAI_API_KEY=sk-your-key-here
@@ -61,6 +61,7 @@ availability_zone    = "eu-north-1a"
 instance_type = "t3.small" 
 root_volume_size = 12 
 ```
+---
 
 ## How to Deploy
 
@@ -86,6 +87,7 @@ terraform apply -auto-approve
 # Destroy all resources
 terraform destroy
 ```
+---
 
 ## Access the Application
 
@@ -98,6 +100,21 @@ terraform destroy
 
 Frontend: http://<PUBLIC_IP>:3000
 Backend:  http://<PUBLIC_IP>:5000/health
+SSH:      ssh -i ~/.ssh/<KEY_NAME>.pem ubuntu@<PUBLIC_IP>
 
 ========================================
+```
+
+### SSH Access
+
+#### Connect to the EC2 instance to view logs or troubleshoot
+
+```bash
+ssh -i ~/.ssh/your-key-name.pem ubuntu@<PUBLIC_IP>
+
+# Once connected, useful commands:
+docker ps                           # Check running containers
+docker compose logs -f              # View all container logs
+docker compose logs backend -f      # View backend logs only
+tail -f /var/log/quiz-app-setup.log # View EC2 user data setup logs
 ```

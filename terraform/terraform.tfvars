@@ -19,8 +19,13 @@ availability_zone    = "eu-north-1a"
 # =============================================================================
 # EC2 Configuration
 # =============================================================================
-instance_type    = "t3.small" 
-root_volume_size = 12  
+instance_type    = "t3.small"  # t3.micro for minimal cost, t3.medium for more resources
+root_volume_size = 12          # GB - Increase if you need more storage
+
+# =============================================================================
+# SSH Access
+# =============================================================================
+ssh_key_name = "your-key-name"  # Replace with your AWS key pair name
 
 # =============================================================================
 # GitHub Repository (for cloning the app)

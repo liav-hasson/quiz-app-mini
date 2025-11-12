@@ -45,6 +45,11 @@ variable "root_volume_size" {
   default     = 12
 }
 
+variable "ssh_key_name" {
+  description = "Name of AWS key pair for SSH access (must exist in AWS)"
+  type        = string
+}
+
 variable "github_repo_url" {
   description = "GitHub repository URL to clone"
   type        = string

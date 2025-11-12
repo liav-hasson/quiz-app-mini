@@ -114,6 +114,15 @@ resource "aws_security_group" "quiz_mini" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow SSH access
+  ingress {
+    description = "SSH access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # Allow all outbound traffic
   egress {
     description = "Allow all outbound traffic"
@@ -156,6 +165,7 @@ resource "aws_instance" "quiz_mini" {
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.quiz_mini.id]
+  key_name               = var.ssh_key_name
 
   # User data script (runs on first boot)
   user_data = templatefile("${path.module}/user-data.sh", {
