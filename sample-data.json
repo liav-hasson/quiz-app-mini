@@ -1,0 +1,52 @@
+{
+  "DevOps Basics": {
+    "Version Control": {
+      "keywords": [
+        "Git",
+        "Repository",
+        "Commit",
+        "Branch",
+        "Merge",
+        "Pull Request",
+        "GitHub",
+        "GitLab"
+      ]
+    },
+    "CI/CD": {
+      "keywords": [
+        "Jenkins",
+        "Pipeline",
+        "Continuous Integration",
+        "Continuous Deployment",
+        "Automated Testing",
+        "Build Automation"
+      ]
+    }
+  },
+  "Containers": {
+    "Docker Basics": {
+      "keywords": [
+        "Container",
+        "Image",
+        "Dockerfile",
+        "Docker Hub",
+        "docker run",
+        "docker build",
+        "docker ps",
+        "docker-compose"
+      ]
+    },
+    "Kubernetes": {
+      "keywords": [
+        "Pod",
+        "Service",
+        "Deployment",
+        "Namespace",
+        "kubectl",
+        "Cluster",
+        "Node",
+        "ReplicaSet"
+      ]
+    }
+  }
+}

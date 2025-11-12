@@ -1,0 +1,93 @@
+# =============================================================================
+# Quiz App Mini Version - Docker Compose
+# =============================================================================
+# Runs frontend, backend, and MongoDB containers for local development
+# MongoDB is bootstrapped with seed data from db.json
+
+version: '3.8'
+
+services:
+  # ===========================================================================
+  # MongoDB Service - Database
+  # ===========================================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: quiz-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=quizdb
+    volumes:
+      # Mount the sample data file from the repo
+      - ./sample-data.json:/docker-entrypoint-initdb.d/sample-data.json:ro
+      # Mount initialization script
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - quiz-network
+  # ===========================================================================
+  # Backend Service - Flask API
+  # ===========================================================================
+  backend:
+    image: liavvv/quiz-app:latest
+    container_name: quiz-backend
+    ports:
+      - "5000:5000"
+    environment:
+      # Flask configuration
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - FLASK_DEBUG=false
+      
+      # MongoDB connection - points to mongodb container
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      
+      # OpenAI configuration (optional - app will work without it)
+      # Set OPENAI_API_KEY if you want AI features to work
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=gpt-4o-mini
+      
+      # Disable SSM for dev environment
+      - AWS_REGION=
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - quiz-network
+
+  # ===========================================================================
+  # Frontend Service - React App
+  # ===========================================================================
+  frontend:
+    image: liavvv/quiz-app-front:latest
+    container_name: quiz-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - quiz-network
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
+# Creates an isolated network for frontend-backend communication
+networks:
+  quiz-network:
+    driver: bridge
