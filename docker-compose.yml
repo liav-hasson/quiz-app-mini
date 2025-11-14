@@ -33,7 +33,7 @@ services:
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: liavvv/quiz-app:latest
+    image: liavvv/quiz-app:v1.0.22
     container_name: quiz-backend
     ports:
       - "5000:5000"
@@ -46,6 +46,10 @@ services:
       # MongoDB connection - points to mongodb container
       - MONGODB_HOST=mongodb
       - MONGODB_PORT=27017
+      
+      # Auto-migration enabled for local dev convenience (defaults to true)
+      # In production K8s, this is set to false (mongodb-init Job handles data)
+      - AUTO_MIGRATE_DB=true
       
       # Example: export OPENAI_API_KEY=sk-your-key-here
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
@@ -67,10 +71,13 @@ services:
   # Frontend Service - React App
   # ===========================================================================
   frontend:
-    image: liavvv/quiz-app-front:latest
+    image: liavvv/quiz-app-front:v1.0.2
     container_name: quiz-frontend
     ports:
       - "3000:80"
+    environment:
+      # Backend URL for nginx proxy (uses docker-compose service name)
+      - BACKEND_URL=backend:5000
     depends_on:
       backend:
         condition: service_healthy

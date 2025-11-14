@@ -1,60 +1,111 @@
 // =============================================================================
-// MongoDB Initialization Script - Quiz App Mini Version
+// Manual MongoDB Data Loading Script
 // =============================================================================
-// This script runs automatically when MongoDB container starts
-// It loads the seed data from db.json into the quizdb database
+// This script transforms and loads data from sample-data.json into MongoDB
+// 
+// Usage:
+//   1. Copy the sample-data.json into the container:
+//      docker cp sample-data.json quiz-mongodb:/tmp/sample-data.json
+//   
+//   2. Run this script:
+//      docker exec quiz-mongodb mongosh quizdb /tmp/load-data-to-mongo.js
+// =============================================================================
 
-// Switch to the quiz database
+// Switch to quizdb database
 db = db.getSiblingDB('quizdb');
 
-print('=== Initializing Quiz Database ===');
+print('=== Starting Manual Data Load ===');
 
-// Load the seed data from the sample data file
-const seedData = cat('/docker-entrypoint-initdb.d/sample-data.json');
-const data = JSON.parse(seedData);
+// Load the JSON file
+const fs = require('fs');
+let data;
 
-print('Seed data loaded successfully');
-print('Categories found: ' + Object.keys(data).length);
+try {
+    const rawData = fs.readFileSync('/tmp/sample-data.json', 'utf8');
+    data = JSON.parse(rawData);
+    print('✓ Loaded sample-data.json');
+} catch (e) {
+    print('ERROR: Could not load sample-data.json');
+    print('Make sure to copy it first: docker cp sample-data.json quiz-mongodb:/tmp/');
+    quit(1);
+}
 
-// Transform the JSON structure into MongoDB documents
-// Structure: { "Category": { "Subject": { "keywords": [...] } } }
-const quizDocuments = [];
+// Clear existing data
+print('\n--- Clearing existing quiz_data collection ---');
+const deleteResult = db.quiz_data.deleteMany({});
+print(`Deleted ${deleteResult.deletedCount} existing documents`);
+
+// Example document structure:
+// {
+//     _id: ObjectId("..."),
+//     category: "Containers",
+//     subject: "Docker Commands",
+//     keywords: ["docker run", "docker ps", "docker stop"...],
+//     style_modifiers: ["command syntax", "practical command"...],
+//     created_at: ISODate("2025-11-14T..."),
+//     updated_at: ISODate("2025-11-14T...")
+// }
+print('\n--- Transforming and inserting data ---');
+
+const documents = [];
+let categoryCount = 0;
+let subjectCount = 0;
 
 for (const [category, subjects] of Object.entries(data)) {
+    categoryCount++;
+    print(`\nCategory: ${category}`);
+    
     for (const [subject, content] of Object.entries(subjects)) {
+        subjectCount++;
+        
         if (content.keywords && Array.isArray(content.keywords)) {
-            quizDocuments.push({
-                category: category,
-                subject: subject,
+            const doc = {
+                topic: category,                 // Backend uses 'topic' not 'category'
+                subtopic: subject,               // Backend uses 'subtopic' not 'subject'
                 keywords: content.keywords,
+                style_modifiers: content.style_modifiers || [],
                 created_at: new Date(),
                 updated_at: new Date()
-            });
+            };
+            
+            documents.push(doc);
+            print(`  - ${subject}: ${content.keywords.length} keywords, ${doc.style_modifiers.length} style_modifiers`);
         }
     }
 }
 
-print('Transformed ' + quizDocuments.length + ' quiz documents');
+print(`\n--- Inserting ${documents.length} documents ---`);
 
-// Insert the documents into the quiz_data collection
-if (quizDocuments.length > 0) {
-    db.quiz_data.insertMany(quizDocuments);
-    print('Inserted ' + quizDocuments.length + ' documents into quiz_data collection');
+if (documents.length > 0) {
+    const insertResult = db.quiz_data.insertMany(documents);
+    print(`✓ Successfully inserted ${insertResult.insertedIds.length} documents`);
 } else {
-    print('No quiz documents to insert');
+    print('ERROR: No documents to insert!');
+    quit(1);
 }
 
 // Create indexes for better query performance
+print('\n--- Creating indexes ---');
 db.quiz_data.createIndex({ category: 1 });
 db.quiz_data.createIndex({ subject: 1 });
 db.quiz_data.createIndex({ category: 1, subject: 1 });
-print('Created indexes on quiz_data collection');
+print('✓ Indexes created');
 
-// Display statistics
-print('=== Database Initialization Complete ===');
-print('Database: quizdb');
-print('Collection: quiz_data');
-print('Total documents: ' + db.quiz_data.countDocuments());
-print('Categories: ' + db.quiz_data.distinct('category').length);
-print('Subjects: ' + db.quiz_data.distinct('subject').length);
-print('=======================================');
+// Verify the data
+print('\n=== Verification ===');
+print(`Total documents: ${db.quiz_data.countDocuments()}`);
+print(`Total categories: ${categoryCount}`);
+print(`Total subjects: ${subjectCount}`);
+
+print('\nCategories in database:');
+const categories = db.quiz_data.distinct('topic');
+categories.forEach(cat => {
+    const count = db.quiz_data.countDocuments({ topic: cat });
+    print(`  - ${cat}: ${count} subjects`);
+});
+
+// Show a sample document
+print('\nSample document:');
+printjson(db.quiz_data.findOne());
+
+print('\n=== Data Load Complete! ===');
