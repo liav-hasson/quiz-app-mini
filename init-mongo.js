@@ -4,11 +4,12 @@
 // This script transforms and loads data from sample-data.json into MongoDB
 // 
 // Usage:
-//   1. Copy the sample-data.json into the container:
+//   1. Copy the DB and the script to the mongo container:
 //      docker cp sample-data.json quiz-mongodb:/tmp/sample-data.json
+//      docker cp init-mongo.js quiz-mongodb:/tmp/init-mongo.js
 //   
 //   2. Run this script:
-//      docker exec quiz-mongodb mongosh quizdb /tmp/load-data-to-mongo.js
+//      docker exec quiz-mongodb mongosh quizdb /tmp/init-mongo.js
 // =============================================================================
 
 // Switch to quizdb database

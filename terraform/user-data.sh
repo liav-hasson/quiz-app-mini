@@ -50,7 +50,10 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 systemctl start docker
 systemctl enable docker
 
-log "Docker service started"
+# Add ubuntu user to docker group
+usermod -aG docker ubuntu
+
+log "Docker service started and ubuntu user added to docker group"
 
 # Verify Docker installation
 if docker --version &>/dev/null; then
@@ -94,8 +97,8 @@ log "Repository setup complete"
 # =============================================================================
 # 4. Start Application with Docker Compose
 # =============================================================================
-log "Navigating to mini-version directory..."
-cd /home/ubuntu/quiz-app/mini-version
+log "Starting application from quiz-app directory..."
+cd /home/ubuntu/quiz-app
 
 # Verify docker-compose.yml exists
 if [ ! -f "docker-compose.yml" ]; then
@@ -113,10 +116,11 @@ else
 fi
 
 log "Starting containers with docker compose up -d..."
+# First attempt - MongoDB needs time to initialize with init scripts
 if docker compose up -d; then
     log "Docker Compose started successfully"
 else
-    log "ERROR: Failed to start containers"
+    log "ERROR: Failed to start containers on first attempt"
     docker compose logs
     exit 1
 fi
@@ -124,8 +128,38 @@ fi
 # =============================================================================
 # 5. Wait for Services to be Healthy
 # =============================================================================
-log "Waiting for services to be healthy (30 seconds)..."
-sleep 30
+log "Waiting for MongoDB to fully initialize (60 seconds)..."
+sleep 60
+
+# Check if all services are healthy, retry if needed
+log "Checking service health and retrying if necessary..."
+MAX_RETRIES=3
+RETRY_COUNT=0
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    log "Attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
+    
+    # Try to start all services
+    docker compose up -d
+    sleep 20
+    
+    # Check if all containers are running
+    RUNNING_CONTAINERS=$(docker compose ps --filter "status=running" --format json 2>/dev/null | wc -l)
+    
+    if [ "$RUNNING_CONTAINERS" -ge 3 ]; then
+        log "All services are running!"
+        break
+    else
+        log "Some services not running yet (found $RUNNING_CONTAINERS/3), retrying..."
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+    fi
+done
+
+if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+    log "WARNING: Not all services started after $MAX_RETRIES attempts"
+fi
+
+sleep 10
 
 log "Checking container status..."
 docker compose ps
