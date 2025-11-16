@@ -46,11 +46,15 @@ This Terraform configuration creates:
    terraform --version
    ```
 
-- **OpenAI API Key** - Must be created for querying. Follow the **[Official OpenAI Guide](https://platform.openai.com/docs/overview)** to create one.
+
+> [!NOTE]  
+> **OpenAI API Key** - Must be created for querying. Follow the **[Official OpenAI Guide](https://platform.openai.com/docs/overview)** to create one.
+
 
 ### Configure Values
   
-#### Set OpenAI API Key
+- **Set OpenAI API Key**
+
    ```bash
    # Export the API key before running docker-compose
    export OPENAI_API_KEY=sk-your-key-here

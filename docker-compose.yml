@@ -23,17 +23,17 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 20s
+      retries: 10
+      start_period: 40s
     networks:
       - quiz-network
   # ===========================================================================
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: liavvv/quiz-app:v1.0.24
+    image: liavvv/quiz-app:v1.0.25
     container_name: quiz-backend
     ports:
       - "5000:5000"
@@ -57,7 +57,7 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-    restart: unless-stopped
+    restart: on-failure:5
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
       interval: 30s
@@ -81,7 +81,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    restart: unless-stopped
+    restart: on-failure:5
     networks:
       - quiz-network
 
