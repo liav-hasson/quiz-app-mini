@@ -2,9 +2,7 @@
 
 #### **A simplified deployment of the Quiz App on a single EC2 instance using Docker Compose.**
 
-Can be ran localy with docker compose, or a minimal deployment to AWS. 
-
----
+Can be ran localy with docker compose for personal use, or a minimal deployment to AWS.
 
 ## About The Quiz-app Project
 
@@ -15,7 +13,7 @@ All the code is fully open source, and contains 5 main repositories:
 - **[Frontend repository](https://github.com/liav-hasson/quiz-app-frontend.git)** - React frontend that runs on Nginx.
 - **[Backend repository](https://github.com/liav-hasson/quiz-app-backend.git)** - Flask Python backend logic.
 - **[GitOps repository](https://github.com/liav-hasson/quiz-app-gitops.git)** - ArgoCD App-of-app pattern.
-- **[IaC repository](https://github.com/liav-hasson/quiz-app-iac.git)** - Terraform creates oll the base infrastructure, on AWS.
+- **[IaC repository](https://github.com/liav-hasson/quiz-app-iac.git)** - Terraform deploys all the base infrastructure to AWS.
 - **[Mini-version repository](https://github.com/liav-hasson/quiz-app-mini.git) << You are here!** - Allows you to self-host localy, or on AWS.
 
 ## What Gets Deployed
@@ -53,14 +51,42 @@ This Terraform configuration creates:
 
 ### Configure Values
   
-- **Set OpenAI API Key**
+- **Configurable values in docker-compose.yml**
 
    ```bash
-   # Export the API key before running docker-compose
-   export OPENAI_API_KEY=sk-your-key-here
+    environment:
+      # Flask configuration
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - FLASK_DEBUG=false
+      
+      # MongoDB connection - points to mongodb container
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      
+      # Auto-migration disabled - user will manually load data after startup
+      # In production K8s, this is set to false (mongodb-init Job handles data)
+      - AUTO_MIGRATE_DB=false
+      - REQUIRE_AUTHENTICATION=false
+      
+      # Optional auth/OAuth secrets (loaded from .env or shell)
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - JWT_SECRET=${JWT_SECRET:-}
+
+      # Use your own API key
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+
+      # Optional AI agent settings
+      - OPENAI_MODEL=gpt-4o-mini
+      - OPENAI_TEMPERATURE_QUESTION=${OPENAI_TEMPERATURE_QUESTION:-0.7}
+      - OPENAI_TEMPERATURE_EVAL=${OPENAI_TEMPERATURE_EVAL:-0.5}
+      - OPENAI_MAX_TOKENS_QUESTION=${OPENAI_MAX_TOKENS_QUESTION:-200}
+      - OPENAI_MAX_TOKENS_EVAL=${OPENAI_MAX_TOKENS_EVAL:-300}
+      - OPENAI_SSM_PARAMETER=${OPENAI_SSM_PARAMETER:-/devops-quiz/openai-api-key}
    ```
    
-* **Note:** If deploying via Terraform, the EC2 instance will need the key set either in its environment, passed via user-data or hard-coded to docker-compose.yml.
+* **Note:** Edit the file directly or use a `.env` file to inject values into the containers. For sensitive values, consider using a secret manager.
 
 #### Edit `terraform.tfvars` to change defaults
 
@@ -82,7 +108,9 @@ ssh_key_name = "your-key-name"
 ```
 ---
 
-## How to Deploy
+## How to Deploy 
+
+### Run on the Cloud
 
 ```bash
 # Go to Terraform directory
@@ -99,14 +127,33 @@ terraform apply -auto-approve
 ```
 
 - Terraform completes in ~1 minute
-- Docker installation and container startup takes **2-3 minutes**
+- A local exec scripts will bootstrap docker and the initialize the database data **2-3 minutes**
 - Total time: **~4-5 minutes**
 
 ```bash
 # Destroy all resources
 terraform destroy
 ```
+
 ---
+
+### Run Locally
+
+```bash
+# Go to repo root directory
+cd /mini-version
+
+# Pull and run the images
+docker compose pull
+docker compose up -d
+
+# Copy the DB and the script to the mongo container:
+docker cp sample-data.json quiz-mongodb:/tmp/sample-data.json
+docker cp init-mongo.js quiz-mongodb:/tmp/init-mongo.js
+
+# Run the script:
+docker exec quiz-mongodb mongosh quizdb /tmp/init-mongo.js
+```
 
 ## Access the Application
 
@@ -118,7 +165,6 @@ terraform destroy
 ========================================
 
 Frontend: http://<PUBLIC_IP>:3000
-Backend:  http://<PUBLIC_IP>:5000/api/health
 SSH:      ssh -i ~/.ssh/<KEY_NAME>.pem ubuntu@<PUBLIC_IP>
 
 ========================================

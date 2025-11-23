@@ -109,4 +109,22 @@ categories.forEach(cat => {
 print('\nSample document:');
 printjson(db.quiz_data.findOne());
 
+// Create test user for development
+print('\n--- Creating test user for development ---');
+try {
+    const userResult = db.users.insertOne({
+        google_id: "dev-user-local",
+        email: "dev@localhost",
+        name: "Local Developer",
+        email_verified: true,
+        exp: 0,
+        questions_count: 0,
+        created_at: new Date(),
+        updated_at: new Date()
+    });
+    print('✓ Test user created with email: dev@localhost');
+} catch (e) {
+    print('WARNING: Failed to create test user: ' + e.message);
+}
+
 print('\n=== Data Load Complete! ===');

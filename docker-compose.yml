@@ -25,15 +25,15 @@ services:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
-      retries: 10
-      start_period: 40s
+      retries: 15
+      start_period: 45s
     networks:
       - quiz-network
   # ===========================================================================
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: liavvv/quiz-app:v1.0.25
+    image: liavvv/quiz-app:v1.0.7-dev-df6e1e1f
     container_name: quiz-backend
     ports:
       - "5000:5000"
@@ -47,23 +47,35 @@ services:
       - MONGODB_HOST=mongodb
       - MONGODB_PORT=27017
       
-      # Auto-migration enabled for local dev convenience (defaults to true)
+      # Auto-migration disabled - user will manually load data after startup
       # In production K8s, this is set to false (mongodb-init Job handles data)
-      - AUTO_MIGRATE_DB=true
+      - AUTO_MIGRATE_DB=false
+      - REQUIRE_AUTHENTICATION=false
       
-      # Example: export OPENAI_API_KEY=sk-your-key-here
+      # Optional auth/OAuth secrets (loaded from .env or shell)
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - JWT_SECRET=${JWT_SECRET:-}
+
+      # Use your own API key
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+
+      # Optional AI agent settings
       - OPENAI_MODEL=gpt-4o-mini
+      - OPENAI_TEMPERATURE_QUESTION=${OPENAI_TEMPERATURE_QUESTION:-0.7}
+      - OPENAI_TEMPERATURE_EVAL=${OPENAI_TEMPERATURE_EVAL:-0.5}
+      - OPENAI_MAX_TOKENS_QUESTION=${OPENAI_MAX_TOKENS_QUESTION:-200}
+      - OPENAI_MAX_TOKENS_EVAL=${OPENAI_MAX_TOKENS_EVAL:-300}
+      - OPENAI_SSM_PARAMETER=${OPENAI_SSM_PARAMETER:-/devops-quiz/openai-api-key}
     depends_on:
-      mongodb:
-        condition: service_healthy
-    restart: on-failure:5
+      - mongodb
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 3
-      start_period: 40s
+      retries: 10
+      start_period: 60s
     networks:
       - quiz-network
 
@@ -71,7 +83,7 @@ services:
   # Frontend Service - React App
   # ===========================================================================
   frontend:
-    image: liavvv/quiz-app-front:v1.0.4
+    image: liavvv/quiz-app-front:v1.0.8-dev-2c3b385c
     container_name: quiz-frontend
     ports:
       - "3000:80"
@@ -79,9 +91,8 @@ services:
       # Backend URL for nginx proxy (uses docker-compose service name)
       - BACKEND_URL=backend:5000
     depends_on:
-      backend:
-        condition: service_healthy
-    restart: on-failure:5
+      - backend
+    restart: unless-stopped
     networks:
       - quiz-network
 
