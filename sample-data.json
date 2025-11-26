@@ -16,11 +16,13 @@
         "OCI (Open Container Initiative)"
       ],
       "style_modifiers": [
-        "concept explanation",
-        "comparison",
-        "use case scenario",
         "advantages and disadvantages",
-        "troubleshooting"
+        "comparison",
+        "concept explanation",
+        "tricky question",
+        "troubleshooting",
+        "use case scenario",
+        "yes or no + explanation"
       ]
     },
     "Docker Commands": {
@@ -50,10 +52,12 @@
         "docker volume"
       ],
       "style_modifiers": [
+        "command comparison",
         "command syntax",
-        "practical command construction",
         "flag and option explanation",
-        "command comparison"
+        "practical command construction",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Docker Architecture": {
@@ -74,12 +78,14 @@
         "Docker context"
       ],
       "style_modifiers": [
-        "concept explanation",
         "component interaction",
-        "system architecture explanation",
-        "workflow sequencing",
+        "concept explanation",
         "performance / security",
-        "troubleshooting"
+        "system architecture explanation",
+        "tricky question",
+        "troubleshooting",
+        "workflow sequencing",
+        "yes or no + explanation"
       ]
     }
   },
@@ -102,15 +108,17 @@
         "CronJob"
       ],
       "style_modifiers": [
-        "core concept",        
-        "component interaction scenario",
-        "use case implementation",
-        "troubleshooting component failure",
+        "code snippet",
         "comparison with alternative components",
+        "component interaction scenario",
+        "core concept",
         "resource definition and configuration",
         "scaling considerations",
         "security and access control",
-        "code snippet"
+        "tricky question",
+        "troubleshooting component failure",
+        "use case implementation",
+        "yes or no + explanation"
       ]
     },
     "Control Plane": {
@@ -127,13 +135,15 @@
         "cloud-controller-manager"
       ],
       "style_modifiers": [
+        "component responsibility",
         "core concept",
         "failure scenario",
-        "component responsibility",
         "high availability setup",
+        "inter-component communication",
         "performance",
         "security",
-        "inter-component communication"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Worker Node": {
@@ -150,14 +160,75 @@
         "containerd"
       ],
       "style_modifiers": [
-        "core concept",
-        "node failure troubleshooting",
-        "resource allocation scenario",
         "component interaction flow",
+        "core concept",
         "maintenance operations",
+        "node failure troubleshooting",
         "performance",
+        "resource allocation scenario",
+        "scaling challenges",
         "security configuration",
-        "scaling challenges"
+        "tricky question",
+        "yes or no + explanation"
+      ]
+    },
+    "Troubleshooting": {
+      "keywords": [
+        "Root cause analysis",
+        "Logs",
+        "Events",
+        "Metrics",
+        "Debugging pods",
+        "CrashLoopBackOff",
+        "ImagePullBackOff",
+        "NodeNotReady",
+        "Networking issues",
+        "DNS resolution",
+        "Config errors",
+        "Resource exhaustion",
+        "OOMKill",
+        "Throttling"
+      ],
+      "style_modifiers": [
+        "configuration misalignment analysis",
+        "environment comparison (dev/staging/prod)",
+        "failure investigation flow",
+        "logs and events interpretation",
+        "network debugging procedure",
+        "performance degradation diagnosis",
+        "step-by-step remediation plan",
+        "symptom-to-cause breakdown",
+        "tricky question",
+        "yes or no + explanation"
+      ]
+    },
+    "Security": {
+      "keywords": [
+        "RBAC",
+        "PodSecurity Standards (PSS)",
+        "NetworkPolicies",
+        "Secrets management",
+        "ServiceAccount",
+        "Admission controllers",
+        "TLS",
+        "mTLS",
+        "Image scanning",
+        "Runtime security",
+        "Audit logs",
+        "OIDC",
+        "IAM roles for service accounts (IRSA)"
+      ],
+      "style_modifiers": [
+        "compliance considerations",
+        "incident response guidance",
+        "least privilege design",
+        "misconfiguration detection",
+        "policy creation workflow",
+        "secure defaults explanation",
+        "security hardening steps",
+        "threat analysis",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Autoscaling & Resources": {
@@ -175,14 +246,16 @@
         "Quality of Service (QoS)"
       ],
       "style_modifiers": [
-        "core concept",
-        "configuration scenario",
-        "performance optimization",
-        "cost optimization analysis",
-        "troubleshooting scaling issues",
-        "resource conflict resolution",
         "best practices implementation",
-        "metrics interpretation"
+        "configuration scenario",
+        "core concept",
+        "cost optimization analysis",
+        "metrics interpretation",
+        "performance optimization",
+        "resource conflict resolution",
+        "tricky question",
+        "troubleshooting scaling issues",
+        "yes or no + explanation"
       ]
     },
     "Networking": {
@@ -203,13 +276,15 @@
         "TargetGroupBinding"
       ],
       "style_modifiers": [
-        "connectivity troubleshooting",
-        "security policy implementation",
-        "load balancing configuration",
         "DNS resolution issues",
+        "connectivity troubleshooting",
+        "ingress controller setup",
+        "load balancing configuration",
         "network policy design",
+        "security policy implementation",
         "service discovery explanation",
-        "ingress controller setup"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Storage": {
@@ -227,13 +302,15 @@
         "HostPath"
       ],
       "style_modifiers": [
-        "storage provisioning scenario",
-        "data persistence troubleshooting",
-        "backup and recovery strategy",
-        "performance optimization",
-        "migration procedures",
         "access control configuration",
-        "storage class selection criteria"
+        "backup and recovery strategy",
+        "data persistence troubleshooting",
+        "migration procedures",
+        "performance optimization",
+        "storage class selection criteria",
+        "storage provisioning scenario",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Commands": {
@@ -262,10 +339,12 @@
         "kubectl rollout"
       ],
       "style_modifiers": [
-        "troubleshooting command sequence",
         "command comparison and selection",
+        "debugging workflow",
         "flag explanation and usage",
-        "debugging workflow"
+        "tricky question",
+        "troubleshooting command sequence",
+        "yes or no + explanation"
       ]
     }
   },
@@ -286,11 +365,13 @@
         "Pull request"
       ],
       "style_modifiers": [
-        "fundamental concept explanation",
-        "system comparison and differences",
         "best practices discussion",
         "collaboration use case",
-        "tool selection rationale"
+        "fundamental concept explanation",
+        "system comparison and differences",
+        "tool selection rationale",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Architecture": {
@@ -309,11 +390,13 @@
         "Detached HEAD"
       ],
       "style_modifiers": [
+        "branch management workflow",
+        "conflict resolution strategy",
         "core concept",
         "internal workflow explanation",
-        "conflict resolution strategy",
-        "branch management workflow",
-        "recovery operations"
+        "recovery operations",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Commands": {
@@ -340,10 +423,12 @@
         "git init"
       ],
       "style_modifiers": [
+        "command comparison and selection",
+        "command flags and optios",
         "core concept",
         "practical usage scenario",
-        "command comparison and selection",
-        "command flags and optios"
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   },
@@ -371,9 +456,11 @@
       "style_modifiers": [
         "core concept",
         "database design scenario",
-        "transaction management",
+        "relationship modeling",
         "schema design critique",
-        "relationship modeling"
+        "transaction management",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "SQL Commands": {
@@ -403,8 +490,10 @@
         "UNION"
       ],
       "style_modifiers": [
+        "code snippet",
         "core concept",
-        "code snippet"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "SQL Databases": {
@@ -428,10 +517,12 @@
       "style_modifiers": [
         "core concept",
         "database selection rationale",
+        "managed service considerations",
+        "migration challenges",
         "performance characteristics comparison",
         "scaling strategy discussion",
-        "managed service considerations",
-        "migration challenges"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "NoSQL Architecture": {
@@ -455,8 +546,10 @@
       "style_modifiers": [
         "core concept",
         "data modeling scenario",
+        "replication strategy",
         "scaling strategy implementation",
-        "replication strategy"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "MongoDB": {
@@ -482,13 +575,15 @@
         "mongorestore"
       ],
       "style_modifiers": [
-        "document design scenario",
         "aggregation pipeline construction",
+        "backup and recovery procedures",
+        "data migration workflow",
+        "document design scenario",
+        "performance optimization",
         "replica set configuration",
         "sharding strategy implementation",
-        "performance optimization",
-        "backup and recovery procedures",
-        "data migration workflow"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Redis & Key-Value": {
@@ -508,12 +603,14 @@
       ],
       "style_modifiers": [
         "caching strategy implementation",
-        "data structure selection",
-        "persistence configuration",
         "cluster setup and management",
+        "data structure selection",
+        "memory management strategy",
         "performance optimization scenario",
+        "persistence configuration",
+        "tricky question",
         "use case suitability analysis",
-        "memory management strategy"
+        "yes or no + explanation"
       ]
     },
     "Big Data": {
@@ -534,12 +631,14 @@
       ],
       "style_modifiers": [
         "architecture design scenario",
-        "processing paradigm selection",
-        "scaling strategy implementation",
         "data pipeline construction",
-        "storage format selection",
         "performance optimization",
-        "real-time vs batch processing"
+        "processing paradigm selection",
+        "real-time vs batch processing",
+        "scaling strategy implementation",
+        "storage format selection",
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   },
@@ -567,13 +666,15 @@
         "Cloud governance"
       ],
       "style_modifiers": [
-        "service model comparison",
-        "deployment model selection",
         "cost optimization scenario",
+        "deployment model selection",
+        "governance and compliance",
         "migration strategy discussion",
-        "shared responsibility application",
         "scaling requirements analysis",
-        "governance and compliance"
+        "service model comparison",
+        "shared responsibility application",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "AWS Basics": {
@@ -590,13 +691,15 @@
         "Local Zones"
       ],
       "style_modifiers": [
-        "infrastructure design scenario",
-        "region and AZ selection rationale",
-        "high availability architecture",
         "access method comparison",
-        "global service optimization",
         "disaster recovery planning",
-        "multi-region deployment strategy"
+        "global service optimization",
+        "high availability architecture",
+        "infrastructure design scenario",
+        "multi-region deployment strategy",
+        "region and AZ selection rationale",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "AWS Compute & Storage": {
@@ -617,13 +720,15 @@
         "Step Functions"
       ],
       "style_modifiers": [
-        "service selection rationale",
         "cost-performance optimization",
-        "scaling configuration scenario",
-        "storage tier selection",
         "migration and backup strategy",
         "performance troubleshooting",
-        "serverless architecture design"
+        "scaling configuration scenario",
+        "serverless architecture design",
+        "service selection rationale",
+        "storage tier selection",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "AWS Networking": {
@@ -643,13 +748,15 @@
         "CloudFront"
       ],
       "style_modifiers": [
-        "network architecture design",
-        "security configuration scenario",
         "connectivity troubleshooting",
-        "routing and DNS configuration",
-        "load balancer selection",
         "hybrid cloud connectivity",
-        "performance optimization"
+        "load balancer selection",
+        "network architecture design",
+        "performance optimization",
+        "routing and DNS configuration",
+        "security configuration scenario",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "AWS Security & IAM": {
@@ -669,12 +776,14 @@
       ],
       "style_modifiers": [
         "access control implementation",
-        "policy creation and troubleshooting",
-        "security best practices",
         "compliance scenario",
         "encryption configuration",
+        "incident response planning",
         "organizational governance",
-        "incident response planning"
+        "policy creation and troubleshooting",
+        "security best practices",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "AWS Data & DevOps": {
@@ -690,12 +799,14 @@
         "Systems Manager"
       ],
       "style_modifiers": [
-        "database service selection",
-        "pipeline construction scenario",
-        "monitoring and alerting setup",
         "data migration strategy",
+        "database service selection",
+        "disaster recovery implementation",
+        "monitoring and alerting setup",
         "performance monitoring",
-        "disaster recovery implementation"
+        "pipeline construction scenario",
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   },
@@ -723,13 +834,15 @@
         "Secrets rotation"
       ],
       "style_modifiers": [
+        "access control design",
         "authentication flow scenario",
         "authorization model implementation",
+        "credential management best practices",
         "encryption method selection",
         "security principle application",
         "token type comparison",
-        "access control design",
-        "credential management best practices"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "SSL/TLS": {
@@ -752,12 +865,14 @@
       ],
       "style_modifiers": [
         "certificate configuration scenario",
-        "handshake process explanation",
-        "validation and trust chain",
-        "security vulnerability analysis",
         "certificate lifecycle management",
         "encryption protocol selection",
-        "troubleshooting connection issues"
+        "handshake process explanation",
+        "security vulnerability analysis",
+        "tricky question",
+        "troubleshooting connection issues",
+        "validation and trust chain",
+        "yes or no + explanation"
       ]
     },
     "Cloud Security": {
@@ -776,13 +891,15 @@
         "Vulnerability scanning"
       ],
       "style_modifiers": [
-        "zero trust implementation",
         "compliance requirement mapping",
-        "security tool selection rationale",
-        "workload protection configuration",
         "encryption strategy design",
+        "incident response planning",
         "security posture assessment",
-        "incident response planning"
+        "security tool selection rationale",
+        "tricky question",
+        "workload protection configuration",
+        "yes or no + explanation",
+        "zero trust implementation"
       ]
     },
     "Network Security": {
@@ -801,13 +918,15 @@
         "WAF rules"
       ],
       "style_modifiers": [
-        "firewall rule configuration",
-        "network segmentation design",
-        "intrusion detection scenario",
-        "access control implementation",
-        "VPN tunnel configuration",
         "DDoS mitigation strategy",
-        "secure network architecture"
+        "VPN tunnel configuration",
+        "access control implementation",
+        "firewall rule configuration",
+        "intrusion detection scenario",
+        "network segmentation design",
+        "secure network architecture",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Backups": {
@@ -827,13 +946,15 @@
         "Backup windows"
       ],
       "style_modifiers": [
-        "backup strategy design",
-        "recovery point calculation",
-        "encryption and security configuration",
         "automation implementation",
+        "backup strategy design",
+        "cost optimization while maintaining safety",
+        "encryption and security configuration",
+        "recovery point calculation",
         "storage tier selection",
+        "tricky question",
         "verification and testing procedures",
-        "cost optimization while maintaining safety"
+        "yes or no + explanation"
       ]
     },
     "Disaster Recovery": {
@@ -855,12 +976,14 @@
       ],
       "style_modifiers": [
         "RTO/RPO calculation scenario",
-        "recovery strategy selection",
+        "business continuity planning",
         "failover procedure design",
-        "testing methodology implementation",
         "geographic redundancy planning",
+        "recovery strategy selection",
         "runbook creation and validation",
-        "business continuity planning"
+        "testing methodology implementation",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Policy as Code": {
@@ -880,13 +1003,15 @@
         "Policy automation"
       ],
       "style_modifiers": [
-        "policy rule creation scenario",
         "compliance as code implementation",
-        "policy testing and validation",
-        "tool selection comparison",
+        "governance automation design",
         "integration with CI/CD pipeline",
         "policy enforcement strategy",
-        "governance automation design"
+        "policy rule creation scenario",
+        "policy testing and validation",
+        "tool selection comparison",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Security Testing": {
@@ -906,13 +1031,15 @@
         "Bug bounty programs"
       ],
       "style_modifiers": [
-        "testing methodology selection",
-        "vulnerability assessment scenario",
-        "tool implementation strategy",
+        "penetration testing scope definition",
+        "remediation workflow design",
         "results interpretation and prioritization",
         "testing integration in SDLC",
-        "penetration testing scope definition",
-        "remediation workflow design"
+        "testing methodology selection",
+        "tool implementation strategy",
+        "tricky question",
+        "vulnerability assessment scenario",
+        "yes or no + explanation"
       ]
     }
   },
@@ -941,12 +1068,14 @@
         "Chaos engineering"
       ],
       "style_modifiers": [
-        "methodology comparison and selection",
+        "best practices application",
         "cultural transformation scenario",
-        "workflow implementation strategy",
-        "team collaboration optimization",
         "methodology benefits and challenges",
-        "best practices application"
+        "methodology comparison and selection",
+        "team collaboration optimization",
+        "tricky question",
+        "workflow implementation strategy",
+        "yes or no + explanation"
       ]
     },
     "CI Basics": {
@@ -968,13 +1097,15 @@
         "Azure DevOps Pipelines"
       ],
       "style_modifiers": [
-        "pipeline design and configuration",
-        "tool selection rationale",
-        "integration strategy implementation",
-        "workflow automation scenario",
-        "testing integration approach",
         "build optimization techniques",
-        "troubleshooting pipeline failures"
+        "integration strategy implementation",
+        "pipeline design and configuration",
+        "testing integration approach",
+        "tool selection rationale",
+        "tricky question",
+        "troubleshooting pipeline failures",
+        "workflow automation scenario",
+        "yes or no + explanation"
       ]
     },
     "CI Artifacting": {
@@ -1001,12 +1132,14 @@
       ],
       "style_modifiers": [
         "artifact management strategy",
-        "versioning scheme implementation",
-        "repository selection and configuration",
-        "security and signing workflow",
         "promotion pipeline design",
+        "repository selection and configuration",
         "retention policy planning",
-        "storage optimization approach"
+        "security and signing workflow",
+        "storage optimization approach",
+        "tricky question",
+        "versioning scheme implementation",
+        "yes or no + explanation"
       ]
     },
     "GitOps Basics": {
@@ -1032,11 +1165,13 @@
       "style_modifiers": [
         "GitOps workflow implementation",
         "deployment model selection",
-        "reconciliation strategy design",
         "drift management approach",
-        "tool comparison and selection",
         "migration to GitOps planning",
-        "observability integration"
+        "observability integration",
+        "reconciliation strategy design",
+        "tool comparison and selection",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "ArgoCD Architecture": {
@@ -1057,13 +1192,15 @@
         "Multi-tenancy"
       ],
       "style_modifiers": [
-        "component interaction explanation",
         "architecture design scenario",
-        "sync strategy implementation",
+        "component interaction explanation",
+        "high availability setup",
         "multi-tenancy configuration",
         "pattern application use case",
-        "high availability setup",
-        "troubleshooting component issues"
+        "sync strategy implementation",
+        "tricky question",
+        "troubleshooting component issues",
+        "yes or no + explanation"
       ]
     },
     "ArgoCD Commands": {
@@ -1085,9 +1222,11 @@
         "argocd app manifests"
       ],
       "style_modifiers": [
-        "command usage and syntax",
+        "cluster management task",
         "command flags and options",
-        "cluster management task"
+        "command usage and syntax",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "ArgoCD Concepts": {
@@ -1105,10 +1244,12 @@
         "Resource hooks"
       ],
       "style_modifiers": [
+        "automation strategy design",
         "concept definition and usage",
         "configuration scenario",
-        "automation strategy design",
-        "resource management workflow"
+        "resource management workflow",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Helm Commands": {
@@ -1130,9 +1271,11 @@
         "helm get values"
       ],
       "style_modifiers": [
+        "command flags and options",
         "command syntax and usage",
+        "tricky question",
         "troubleshooting command sequence",
-        "command flags and options"
+        "yes or no + explanation"
       ]
     },
     "Helm Architecture": {
@@ -1152,12 +1295,14 @@
         ".helmignore"
       ],
       "style_modifiers": [
-        "chart structure explanation",
-        "templating strategy design",
-        "versioning scheme implementation",
-        "hook implementation scenario",
         "chart organization best practices",
-        "release management workflow"
+        "chart structure explanation",
+        "hook implementation scenario",
+        "release management workflow",
+        "templating strategy design",
+        "tricky question",
+        "versioning scheme implementation",
+        "yes or no + explanation"
       ]
     }
   },
@@ -1182,10 +1327,12 @@
       ],
       "style_modifiers": [
         "concept definition",
-        "playbook design scenario",
         "idempotent task implementation",
+        "inventory management approach",
+        "playbook design scenario",
         "role organization strategy",
-        "inventory management approach"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Terraform": {
@@ -1214,13 +1361,15 @@
         "remote-exec"
       ],
       "style_modifiers": [
+        "comparison with alternatives",
         "concept explanation and usage",
+        "conditional logic implementation",
+        "module design best practices",
         "resource configuration scenario",
         "state management strategy",
-        "module design best practices",
-        "comparison with alternatives",
-        "conditional logic implementation",
-        "troubleshooting state conflicts"
+        "tricky question",
+        "troubleshooting state conflicts",
+        "yes or no + explanation"
       ]
     },
     "Terraform Commands": {
@@ -1242,9 +1391,11 @@
         "terraform console"
       ],
       "style_modifiers": [
-        "command syntax and usage",
         "command flags and options",
-        "state manipulation operations"
+        "command syntax and usage",
+        "state manipulation operations",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "CloudFormation": {
@@ -1263,13 +1414,15 @@
         "Drift detection"
       ],
       "style_modifiers": [
-        "template structure explanation",
-        "stack design scenario",
-        "intrinsic function usage",
-        "parameter configuration approach",
-        "cross-stack reference implementation",
         "change set validation workflow",
-        "multi-region deployment with StackSets"
+        "cross-stack reference implementation",
+        "intrinsic function usage",
+        "multi-region deployment with StackSets",
+        "parameter configuration approach",
+        "stack design scenario",
+        "template structure explanation",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Pulumi": {
@@ -1286,13 +1439,15 @@
         "Pulumi preview"
       ],
       "style_modifiers": [
+        "comparison with alternatives",
         "concept and architecture explanation",
         "multi-language implementation scenario",
+        "resource definition in code",
         "stack configuration strategy",
         "state management approach",
-        "resource definition in code",
         "testing infrastructure code",
-        "comparison with alternatives"
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   },
@@ -1314,12 +1469,14 @@
       ],
       "style_modifiers": [
         "core concept and architecture",
-        "service mesh adoption rationale",
-        "traffic management scenario",
-        "resilience pattern implementation",
         "observability configuration",
         "performance and security trade-offs",
-        "troubleshooting mesh connectivity"
+        "resilience pattern implementation",
+        "service mesh adoption rationale",
+        "traffic management scenario",
+        "tricky question",
+        "troubleshooting mesh connectivity",
+        "yes or no + explanation"
       ]
     },
     "Istio": {
@@ -1340,14 +1497,16 @@
         "Istio egress"
       ],
       "style_modifiers": [
-        "component interaction explanation",
-        "traffic routing configuration",
-        "security policy implementation",
         "canary deployment scenario",
-        "mTLS configuration approach",
+        "component interaction explanation",
         "gateway setup and management",
+        "mTLS configuration approach",
+        "observability integration",
+        "security policy implementation",
+        "traffic routing configuration",
+        "tricky question",
         "troubleshooting traffic flow",
-        "observability integration"
+        "yes or no + explanation"
       ]
     },
     "Policy Engines": {
@@ -1367,20 +1526,53 @@
         "Policy exceptions"
       ],
       "style_modifiers": [
-        "policy engine architecture",
-        "policy rule creation scenario",
-        "validation vs mutation comparison",
         "compliance enforcement implementation",
-        "policy testing strategy",
         "exception handling approach",
         "integration with CI/CD pipeline",
-        "troubleshooting policy violations"
+        "policy engine architecture",
+        "policy rule creation scenario",
+        "policy testing strategy",
+        "tricky question",
+        "troubleshooting policy violations",
+        "validation vs mutation comparison",
+        "yes or no + explanation"
       ]
     }
   },
   "Networking": {
+    "Debugging": {
+      "keywords": [
+        "Packet loss",
+        "High latency",
+        "DNS failures",
+        "Service unreachable",
+        "Port blocking",
+        "Firewall rules",
+        "Routing issues",
+        "Connection reset",
+        "TCP retransmissions",
+        "TLS handshake failure",
+        "Misconfigured load balancer",
+        "CNI plugin errors",
+        "Pod-to-pod connectivity",
+        "Node network issues"
+      ],
+      "style_modifiers": [
+        "brief misconfiguration highlight",
+        "fast checklist-style response",
+        "one-step diagnostic hint",
+        "quick difference explanation",
+        "short root cause summary",
+        "short validation step",
+        "succinct fix recommendation",
+        "tricky question",
+        "yes or no + explanation",
+        "yes or no answer with brief justification"
+      ]
+    },
     "Protocols": {
       "keywords": [
+        "Webhook",
         "TCP",
         "UDP",
         "HTTP",
@@ -1393,14 +1585,15 @@
         "DNS protocol",
         "FTP",
         "SSH protocol",
-        "SMTP",
-        "SNMP"
+        "SMTP"
       ],
       "style_modifiers": [
-        "protocol explanation and characteristics",
-        "protocol comparison and selection",
         "performance and reliability",
-        "troubleshooting connectivity issues"
+        "protocol comparison and selection",
+        "protocol explanation and characteristics",
+        "tricky question",
+        "troubleshooting connectivity issues",
+        "yes or no + explanation"
       ]
     },
     "OSI Model": {
@@ -1419,7 +1612,9 @@
       "style_modifiers": [
         "layer responsibility and function",
         "protocol mapping to layers",
-        "troubleshooting layer-specific issues"
+        "tricky question",
+        "troubleshooting layer-specific issues",
+        "yes or no + explanation"
       ]
     },
     "TCP/IP": {
@@ -1440,11 +1635,14 @@
       ],
       "style_modifiers": [
         "concept explanation and usage",
-        "troubleshooting connection issues"
+        "tricky question",
+        "troubleshooting connection issues",
+        "yes or no + explanation"
       ]
     },
     "HTTP": {
       "keywords": [
+        "API",
         "HTTP methods",
         "GET",
         "POST",
@@ -1462,10 +1660,12 @@
         "Content negotiation"
       ],
       "style_modifiers": [
-        "concept explanation and usage",
         "RESTful API design consideration",
         "caching strategy configuration",
-        "security header implementation"
+        "concept explanation and usage",
+        "security header implementation",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "API": {
@@ -1484,11 +1684,13 @@
         "Webhook"
       ],
       "style_modifiers": [
-        "concept explanation and usage",
         "API design pattern selection",
         "architecture implementation scenario",
         "authentication and authorization strategy",
-        "performance and scalability optimization"
+        "concept explanation and usage",
+        "performance and scalability optimization",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "DNS": {
@@ -1511,18 +1713,21 @@
         "DNSSEC"
       ],
       "style_modifiers": [
-        "concept explanation and usage",
-        "resolution process explanation",
-        "zone management scenario",
-        "TTL optimization strategy",
-        "troubleshooting resolution failures",
         "DNSSEC implementation approach",
+        "TTL optimization strategy",
         "caching behavior analysis",
-        "high availability DNS design"
+        "concept explanation and usage",
+        "high availability DNS design",
+        "resolution process explanation",
+        "tricky question",
+        "troubleshooting resolution failures",
+        "yes or no + explanation",
+        "zone management scenario"
       ]
     },
-    "Commands": {
+    "Linux Commands": {
       "keywords": [
+        "netcat",
         "ping",
         "traceroute",
         "netstat",
@@ -1540,13 +1745,49 @@
         "ifconfig"
       ],
       "style_modifiers": [
-        "command syntax and usage",
-        "troubleshooting workflow scenario",
         "command flags and options",
-        "output interpretation and analysis",
+        "command syntax and usage",
         "diagnostic command sequence",
         "network debugging approach",
-        "practical troubleshooting example"
+        "output interpretation and analysis",
+        "practical troubleshooting example",
+        "tricky question",
+        "troubleshooting workflow scenario",
+        "yes or no + explanation"
+      ]
+    },
+    "On-Premise Networking": {
+      "keywords": [
+        "VLAN",
+        "Trunk ports",
+        "Access ports",
+        "Layer 2 switching",
+        "Layer 3 routing",
+        "Physical firewalls",
+        "ACLs",
+        "Load balancer appliances",
+        "DHCP server",
+        "DNS server",
+        "Spanning Tree Protocol (STP)",
+        "Port channels",
+        "Static routes",
+        "BGP",
+        "OSPF",
+        "Physical cabling",
+        "Rack networking",
+        "Patch panels"
+      ],
+      "style_modifiers": [
+        "brief failure cause highlight",
+        "concise performance impact note",
+        "fast connectivity validation",
+        "quick cloud vs on-prem comparison",
+        "short configuration explanation",
+        "simple design recommendation",
+        "tricky question",
+        "troubleshooting step",
+        "yes or no + explanation",
+        "yes or no with brief justification"
       ]
     }
   },
@@ -1569,14 +1810,16 @@
         "Retry pattern"
       ],
       "style_modifiers": [
-        "pattern explanation and use case",
-        "implementation scenario and design",
-        "pattern selection rationale",
-        "trade-offs and considerations",
-        "migration strategy to pattern",
-        "real-world application example",
         "anti-pattern identification",
-        "scalability and resilience benefits"
+        "implementation scenario and design",
+        "migration strategy to pattern",
+        "pattern explanation and use case",
+        "pattern selection rationale",
+        "real-world application example",
+        "scalability and resilience benefits",
+        "trade-offs and considerations",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Cloud Architecture": {
@@ -1598,14 +1841,47 @@
         "Sustainability pillar"
       ],
       "style_modifiers": [
-        "pillar application and assessment",
-        "architecture design scenario",
         "HA and DR strategy implementation",
+        "architecture design scenario",
+        "architecture improvement scenario",
         "cost-performance optimization",
+        "framework principle application",
+        "migration and modernization approach",
         "multi-region deployment planning",
         "resilience pattern implementation",
-        "framework principle application",
-        "migration and modernization approach"
+        "tricky question",
+        "yes or no + explanation"
+      ]
+    },
+    "Migration": {
+      "keywords": [
+        "Cloud migration",
+        "Lift-and-shift",
+        "Replatforming",
+        "Refactoring",
+        "Data migration",
+        "Cutover strategy",
+        "Blue/green migration",
+        "Canary migration",
+        "Zero-downtime migration",
+        "Rollback planning",
+        "Stateful workload migration",
+        "Dependency mapping",
+        "Network migration",
+        "IAM migration",
+        "Hybrid migration approach"
+      ],
+      "style_modifiers": [
+        "brief risk summary",
+        "fast checklist-style response",
+        "one-step validation hint",
+        "quick difference explanation",
+        "short migration plan outline",
+        "short trade-off comparison",
+        "succinct recommendation",
+        "tricky question",
+        "yes or no + explanation",
+        "yes or no with short reasoning"
       ]
     },
     "Hybrid Architecture": {
@@ -1624,14 +1900,16 @@
         "Workload placement"
       ],
       "style_modifiers": [
-        "hybrid architecture design scenario",
-        "connectivity solution selection",
-        "workload placement strategy",
         "compliance and data residency",
-        "performance optimization approach",
-        "identity and access management",
+        "connectivity solution selection",
         "cost and latency trade-offs",
-        "migration and integration planning"
+        "hybrid architecture design scenario",
+        "identity and access management",
+        "migration and integration planning",
+        "performance optimization approach",
+        "tricky question",
+        "workload placement strategy",
+        "yes or no + explanation"
       ]
     },
     "On-Premises": {
@@ -1649,14 +1927,16 @@
         "Colocation facility"
       ],
       "style_modifiers": [
-        "infrastructure component explanation",
-        "virtualization platform comparison",
         "capacity planning scenario",
-        "storage architecture design",
-        "high availability configuration",
-        "migration to cloud considerations",
+        "disaster recovery planning",
         "hardware selection rationale",
-        "disaster recovery planning"
+        "high availability configuration",
+        "infrastructure component explanation",
+        "migration to cloud considerations",
+        "storage architecture design",
+        "tricky question",
+        "virtualization platform comparison",
+        "yes or no + explanation"
       ]
     }
   },
@@ -1680,7 +1960,9 @@
         "Synthetic monitoring"
       ],
       "style_modifiers": [
-        "Define the following observability concept"
+        "Define the following observability concept",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Prometheus Stack": {
@@ -1701,7 +1983,9 @@
         "Federation"
       ],
       "style_modifiers": [
-        "Explain the following Prometheus stack component"
+        "Explain the following Prometheus stack component",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "ELK Stack": {
@@ -1721,7 +2005,9 @@
         "Elastic APM"
       ],
       "style_modifiers": [
-        "Define the following ELK stack component"
+        "Define the following ELK stack component",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Logging": {
@@ -1740,7 +2026,9 @@
         "Application logs"
       ],
       "style_modifiers": [
-        "Explain the following logging concept"
+        "Explain the following logging concept",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Monitoring Tools": {
@@ -1760,7 +2048,9 @@
         "VictorOps"
       ],
       "style_modifiers": [
-        "Describe the following monitoring tool"
+        "Describe the following monitoring tool",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Metrics & Dashboards": {
@@ -1781,7 +2071,9 @@
         "Threshold alerts"
       ],
       "style_modifiers": [
-        "Define the following metrics or dashboard concept"
+        "Define the following metrics or dashboard concept",
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   },
@@ -1812,11 +2104,13 @@
         "pidstat"
       ],
       "style_modifiers": [
-        "command explenation",
         "command comparison and selection",
+        "command explenation",
         "command flags and options",
         "command output",
-        "one line code syntax challange"
+        "one line code syntax challange",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "Text Manipulation": {
@@ -1839,11 +2133,13 @@
         "patch"
       ],
       "style_modifiers": [
-        "command explenation",
         "command comparison and selection",
+        "command explenation",
         "command flags and options",
         "command output",
-        "one line code syntax challange"
+        "one line code syntax challange",
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "System and User Management": {
@@ -1874,9 +2170,11 @@
       ],
       "style_modifiers": [
         "command comparison and selection",
+        "command explenation",
         "command flags and options",
         "command output",
-        "command explenation"
+        "tricky question",
+        "yes or no + explanation"
       ]
     },
     "File Operations": {
@@ -1907,7 +2205,9 @@
         "command flags and options",
         "command output",
         "command use case",
-        "one line code syntax challange"
+        "one line code syntax challange",
+        "tricky question",
+        "yes or no + explanation"
       ]
     }
   }

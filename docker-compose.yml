@@ -20,6 +20,8 @@ services:
       - ./sample-data.json:/docker-entrypoint-initdb.d/sample-data.json:ro
       # Mount initialization script
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      # Mount EBS volume for data persistence (on EC2 only, comment out for local dev)
+      - /mnt/mongodb-data:/data/db
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
@@ -33,7 +35,7 @@ services:
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: liavvv/quiz-app:v1.0.7-dev-df6e1e1f
+    image: quiz-app-backend:dev
     container_name: quiz-backend
     ports:
       - "5000:5000"
@@ -50,18 +52,15 @@ services:
       # Auto-migration disabled - user will manually load data after startup
       # In production K8s, this is set to false (mongodb-init Job handles data)
       - AUTO_MIGRATE_DB=false
-      - REQUIRE_AUTHENTICATION=false
+      - REQUIRE_AUTHENTICATION=${REQUIRE_AUTHENTICATION:-false}
       
       # Optional auth/OAuth secrets (loaded from .env or shell)
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
       - JWT_SECRET=${JWT_SECRET:-}
 
-      # Use your own API key
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-
       # Optional AI agent settings
-      - OPENAI_MODEL=gpt-4o-mini
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
       - OPENAI_TEMPERATURE_QUESTION=${OPENAI_TEMPERATURE_QUESTION:-0.7}
       - OPENAI_TEMPERATURE_EVAL=${OPENAI_TEMPERATURE_EVAL:-0.5}
       - OPENAI_MAX_TOKENS_QUESTION=${OPENAI_MAX_TOKENS_QUESTION:-200}
@@ -83,7 +82,7 @@ services:
   # Frontend Service - React App
   # ===========================================================================
   frontend:
-    image: liavvv/quiz-app-front:v1.0.8-dev-2c3b385c
+    image: liavvv/quiz-app-front:v1.0.10-dev-832ec339
     container_name: quiz-frontend
     ports:
       - "3000:80"

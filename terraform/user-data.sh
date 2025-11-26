@@ -17,7 +17,57 @@ log() {
 log "Starting Quiz App Mini setup..."
 
 # =============================================================================
-# 1. Update System Packages
+# 1. Mount MongoDB EBS Volume
+# =============================================================================
+log "Waiting for EBS volume to be attached..."
+DEVICE_NAME="/dev/nvme1n1"  # NVMe naming on Nitro instances
+MOUNT_POINT="/mnt/mongodb-data"
+MAX_WAIT=60
+ELAPSED=0
+
+# Wait for NVMe device to appear
+while [ ! -e "$DEVICE_NAME" ] && [ $ELAPSED -lt $MAX_WAIT ]; do
+    log "Waiting for EBS volume to appear at $DEVICE_NAME... ($${ELAPSED}s elapsed)"
+    sleep 5
+    ELAPSED=$((ELAPSED + 5))
+done
+
+if [ ! -e "$DEVICE_NAME" ]; then
+    log "ERROR: EBS volume not found at $DEVICE_NAME after $${MAX_WAIT} seconds"
+    exit 1
+fi
+
+log "Found NVMe device: $DEVICE_NAME"
+
+# Create mount point
+mkdir -p "$MOUNT_POINT"
+
+# Check if volume is already formatted
+if ! blkid "$DEVICE_NAME" > /dev/null 2>&1; then
+    log "Volume not formatted. Formatting with ext4..."
+    mkfs.ext4 "$DEVICE_NAME"
+    log "Volume formatted successfully"
+else
+    log "Volume already formatted"
+fi
+
+# Mount the volume
+log "Mounting EBS volume at $MOUNT_POINT..."
+mount "$DEVICE_NAME" "$MOUNT_POINT"
+
+# Add to fstab for persistence across reboots
+UUID=$(blkid -s UUID -o value "$DEVICE_NAME")
+if ! grep -q "$UUID" /etc/fstab; then
+    echo "UUID=$UUID $MOUNT_POINT ext4 defaults,nofail 0 2" >> /etc/fstab
+    log "Added volume to /etc/fstab"
+fi
+
+# Set permissions for Docker to access
+chown -R 999:999 "$MOUNT_POINT"  # MongoDB container runs as UID 999
+log "EBS volume mounted successfully at $MOUNT_POINT"
+
+# =============================================================================
+# 2. Update System Packages
 # =============================================================================
 log "Updating system packages..."
 apt-get update -y
@@ -74,11 +124,11 @@ fi
 # =============================================================================
 # 3. Clone Repository
 # =============================================================================
-log "Cloning quiz-app repository from ${github_repo_url}..."
+log "Cloning quiz-app repository from $${github_repo_url}..."
 cd /home/ubuntu
 
 # injected from terraform.tfvars
-if git clone ${github_repo_url} quiz-app; then
+if git clone $${github_repo_url} quiz-app; then
     log "Repository cloned successfully"
 else
     log "ERROR: Failed to clone repository"
@@ -86,8 +136,8 @@ else
 fi
 
 cd quiz-app
-log "Checking out branch: ${github_branch}"
-git checkout ${github_branch}
+log "Checking out branch: $${github_branch}"
+git checkout $${github_branch}
 
 # Set correct ownership
 chown -R ubuntu:ubuntu /home/ubuntu/quiz-app
@@ -126,68 +176,92 @@ else
 fi
 
 # =============================================================================
-# 5. Wait for Services to be Healthy
+# 5. Wait for MongoDB to be Ready
 # =============================================================================
-log "Waiting for MongoDB to fully initialize (60 seconds)..."
-sleep 60
+log "Waiting for MongoDB to be ready..."
+MONGODB_CONTAINER="quiz-mongodb"
+MAX_WAIT=300  # 5 minutes timeout
+ELAPSED=0
 
-# Check if all services are healthy, retry if needed
-log "Checking service health and retrying if necessary..."
-MAX_RETRIES=3
-RETRY_COUNT=0
-
-while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    log "Attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
-    
-    # Try to start all services
-    docker compose up -d
-    sleep 20
-    
-    # Check if all containers are running
-    RUNNING_CONTAINERS=$(docker compose ps --filter "status=running" --format json 2>/dev/null | wc -l)
-    
-    if [ "$RUNNING_CONTAINERS" -ge 3 ]; then
-        log "All services are running!"
-        break
-    else
-        log "Some services not running yet (found $RUNNING_CONTAINERS/3), retrying..."
-        RETRY_COUNT=$((RETRY_COUNT + 1))
+until docker exec $MONGODB_CONTAINER mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; do
+    if [ $ELAPSED -ge $MAX_WAIT ]; then
+        log "ERROR: MongoDB failed to start within $${MAX_WAIT} seconds"
+        docker compose logs mongodb | tail -50
+        exit 1
     fi
+    log "Waiting for MongoDB to be ready... ($${ELAPSED}s elapsed)"
+    sleep 5
+    ELAPSED=$((ELAPSED + 5))
 done
 
-if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-    log "WARNING: Not all services started after $MAX_RETRIES attempts"
+log "MongoDB is ready!"
+
+# =============================================================================
+# 6. Initialize MongoDB with Sample Data
+# =============================================================================
+log "Copying sample data and initialization script to MongoDB container..."
+
+# Copy the data and script files
+if docker cp /home/ubuntu/quiz-app/sample-data.json $${MONGODB_CONTAINER}:/tmp/sample-data.json; then
+    log "✓ Copied sample-data.json"
+else
+    log "ERROR: Failed to copy sample-data.json"
+    exit 1
 fi
 
+if docker cp /home/ubuntu/quiz-app/init-mongo.js $${MONGODB_CONTAINER}:/tmp/init-mongo.js; then
+    log "✓ Copied init-mongo.js"
+else
+    log "ERROR: Failed to copy init-mongo.js"
+    exit 1
+fi
+
+log "Running MongoDB initialization script..."
+if docker exec $MONGODB_CONTAINER mongosh quizdb /tmp/init-mongo.js; then
+    log "✓ MongoDB initialization completed successfully"
+else
+    log "ERROR: Failed to run initialization script"
+    docker compose logs mongodb | tail -30
+    exit 1
+fi
+
+# =============================================================================
+# 7. Restart Backend to Ensure Connection
+# =============================================================================
+log "Restarting backend service to ensure proper MongoDB connection..."
+docker compose restart backend
 sleep 10
 
+# =============================================================================
+# 8. Verify All Services
+# =============================================================================
 log "Checking container status..."
 docker compose ps
 
 # Check if containers are running
 if docker ps | grep -q "quiz-backend"; then
-    log "✅ Backend container is running"
+    log "Backend container is running"
 else
-    log "❌ Backend container failed to start"
+    log "Backend container failed to start"
     docker compose logs backend | tail -20
 fi
 
 if docker ps | grep -q "quiz-frontend"; then
-    log "✅ Frontend container is running"
+    log "Frontend container is running"
 else
-    log "❌ Frontend container failed to start"
+    log "Frontend container failed to start"
     docker compose logs frontend | tail -20
 fi
 
 if docker ps | grep -q "quiz-mongodb"; then
-    log "✅ MongoDB container is running"
+    log "MongoDB container is running"
 else
-    log "❌ MongoDB container failed to start"
+    log "MongoDB container failed to start"
     docker compose logs mongodb | tail -20
 fi
 
 # =============================================================================
-# 6. Final Setup Complete
+# 9. Final Setup Complete
 # =============================================================================
 log "========================================="
 log "Quiz App Mini setup complete!"

@@ -45,6 +45,12 @@ variable "root_volume_size" {
   default     = 12
 }
 
+variable "mongodb_ebs_volume_id" {
+  description = "EBS volume ID for MongoDB data (from Kubernetes cluster)"
+  type        = string
+  default     = "vol-020cd08dcd3d4f91a"
+}
+
 variable "ssh_key_name" {
   description = "Name of AWS key pair for SSH access (must exist in AWS)"
   type        = string
@@ -71,4 +77,26 @@ variable "common_tags" {
     ManagedBy   = "Terraform"
     Purpose     = "Ephemeral-Dev-Environment"
   }
+}
+
+# =============================================================================
+# Route53 & SSL Configuration
+# =============================================================================
+
+variable "public_zone_id" {
+  description = "Route53 hosted zone ID for public domain"
+  type        = string
+  default     = "Z06307832TD07PZVN77GO" # weatherlabs.org
+}
+
+variable "domain_name" {
+  description = "Domain name for the mini quiz app"
+  type        = string
+  default     = "dev-quiz.weatherlabs.org"
+}
+
+variable "enable_https" {
+  description = "Enable HTTPS with ACM certificate"
+  type        = bool
+  default     = true
 }

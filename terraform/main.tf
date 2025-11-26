@@ -114,6 +114,15 @@ resource "aws_security_group" "quiz_mini" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow HTTPS traffic
+  ingress {
+    description = "HTTPS access"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # Allow SSH access
   ingress {
     description = "SSH access"
@@ -138,6 +147,62 @@ resource "aws_security_group" "quiz_mini" {
 }
 
 # =============================================================================
+# Route53 Hosted Zone
+# =============================================================================
+# Reference existing hosted zone for DNS record creation
+data "aws_route53_zone" "public" {
+  zone_id = var.public_zone_id
+}
+
+# =============================================================================
+# ACM Certificate for HTTPS
+# =============================================================================
+# Creates SSL certificate for the domain, validated via DNS
+resource "aws_acm_certificate" "main" {
+  count = var.enable_https ? 1 : 0
+
+  domain_name       = var.domain_name
+  validation_method = "DNS"
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name = "${var.project_name}-certificate"
+    }
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# DNS validation record for ACM certificate
+resource "aws_route53_record" "cert_validation" {
+  for_each = var.enable_https ? {
+    for dvo in aws_acm_certificate.main[0].domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  } : {}
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = data.aws_route53_zone.public.zone_id
+}
+
+# Wait for certificate validation to complete
+resource "aws_acm_certificate_validation" "main" {
+  count = var.enable_https ? 1 : 0
+
+  certificate_arn         = aws_acm_certificate.main[0].arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
+}
+
+# =============================================================================
 # Data Source - Get Latest Ubuntu AMI
 # =============================================================================
 # Automatically finds the most recent Ubuntu 22.04 LTS AMI in the region
@@ -157,6 +222,80 @@ data "aws_ami" "ubuntu" {
 }
 
 # =============================================================================
+# IAM Role - EC2 Instance Role for SSM Parameter Store Access
+# =============================================================================
+# Allows EC2 to assume this role
+resource "aws_iam_role" "ec2_ssm_role" {
+  name = "${var.project_name}-ec2-ssm-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-ec2-ssm-role"
+  }
+}
+
+# =============================================================================
+# IAM Policy - SSM Parameter Store Read Access
+# =============================================================================
+# Grants permission to read parameters from SSM Parameter Store
+resource "aws_iam_role_policy" "ssm_parameter_store_policy" {
+  name = "${var.project_name}-ssm-parameter-store-policy"
+  role = aws_iam_role.ec2_ssm_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ]
+        Resource = "arn:aws:ssm:${var.aws_region}:*:parameter/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "ssm.${var.aws_region}.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# =============================================================================
+# IAM Instance Profile - Attaches role to EC2
+# =============================================================================
+# Required to associate the IAM role with the EC2 instance
+resource "aws_iam_instance_profile" "ec2_ssm_profile" {
+  name = "${var.project_name}-ec2-ssm-profile"
+  role = aws_iam_role.ec2_ssm_role.name
+
+  tags = {
+    Name = "${var.project_name}-ec2-ssm-profile"
+  }
+}
+
+# =============================================================================
 # EC2 Instance - Main Application Server
 # =============================================================================
 # Runs Docker containers with frontend and backend
@@ -166,6 +305,7 @@ resource "aws_instance" "quiz_mini" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.quiz_mini.id]
   key_name               = var.ssh_key_name
+  iam_instance_profile   = aws_iam_instance_profile.ec2_ssm_profile.name
 
   # User data script (runs on first boot)
   user_data = templatefile("${path.module}/user-data.sh", {
@@ -187,4 +327,30 @@ resource "aws_instance" "quiz_mini" {
   tags = {
     Name = "${var.project_name}-instance"
   }
+}
+
+# =============================================================================
+# EBS Volume Attachment - MongoDB Data Volume
+# =============================================================================
+# Attaches the existing MongoDB EBS volume to the EC2 instance
+resource "aws_volume_attachment" "mongodb_data" {
+  device_name = "/dev/sdf"
+  volume_id   = var.mongodb_ebs_volume_id
+  instance_id = aws_instance.quiz_mini.id
+
+  # Don't force detach on destroy to preserve data
+  force_detach = false
+  skip_destroy = true
+}
+
+# =============================================================================
+# Route53 DNS Record
+# =============================================================================
+# Points domain name to EC2 instance public IP
+resource "aws_route53_record" "quiz_mini" {
+  zone_id = data.aws_route53_zone.public.zone_id
+  name    = var.domain_name
+  type    = "A"
+  ttl     = 300
+  records = [aws_instance.quiz_mini.public_ip]
 }
