@@ -35,7 +35,7 @@ services:
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: quiz-app-backend:dev
+    image: quiz-app-backend:v1.0.11-dev-9a5b2f68
     container_name: quiz-backend
     ports:
       - "5000:5000"
