@@ -1,0 +1,4 @@
+templatefile("user-data.sh", {
+  github_repo_url = "https://github.com/liav-hasson/quiz-app-mini.git"
+  github_branch   = "main"
+})

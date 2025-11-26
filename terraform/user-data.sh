@@ -124,11 +124,11 @@ fi
 # =============================================================================
 # 3. Clone Repository
 # =============================================================================
-log "Cloning quiz-app repository from $${github_repo_url}..."
+log "Cloning quiz-app repository from ${github_repo_url}..."
 cd /home/ubuntu
 
 # injected from terraform.tfvars
-if git clone $${github_repo_url} quiz-app; then
+if git clone ${github_repo_url} quiz-app; then
     log "Repository cloned successfully"
 else
     log "ERROR: Failed to clone repository"
@@ -136,8 +136,8 @@ else
 fi
 
 cd quiz-app
-log "Checking out branch: $${github_branch}"
-git checkout $${github_branch}
+log "Checking out branch: ${github_branch}"
+git checkout ${github_branch}
 
 # Set correct ownership
 chown -R ubuntu:ubuntu /home/ubuntu/quiz-app

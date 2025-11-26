@@ -35,7 +35,7 @@ services:
   # Backend Service - Flask API
   # ===========================================================================
   backend:
-    image: quiz-app-backend:v1.0.11-dev-9a5b2f68
+    image: quiz-app-backend:latest
     container_name: quiz-backend
     ports:
       - "5000:5000"
@@ -82,7 +82,7 @@ services:
   # Frontend Service - React App
   # ===========================================================================
   frontend:
-    image: liavvv/quiz-app-front:v1.0.10-dev-832ec339
+    image: liavvv/quiz-app-front:latest
     container_name: quiz-frontend
     ports:
       - "3000:80"
